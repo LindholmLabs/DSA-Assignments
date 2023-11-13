@@ -1,20 +1,32 @@
-// Problem1.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// Problem 1: Bucket Sort
+// Description: Find the target number in the unsorted vector
+// Course: IT405G - Datastructures and Algorithms
+// Authors: William Lindholm, Lili Tran
+// Date: 13-11-2023
 //
 
 #include <iostream>
+#include <vector>
+
+using namespace std;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	vector<int> unsorted_vector = { 41, 12, 53, 14, 5, 62, 7, 28, 9 };
+	int target = 53;
+	int result = bucketSort(unsorted_vector, target);
+	printf("The target is located at index %i", result);
+	return 0;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+/*
+ * Function: bucketSort
+ * Find the target number in the unsorted vector
+ * @param unsorted_vector: the unsorted vector
+ * @param target: the target number
+ */
+int bucketSort(vector<int> unsorted_vector, int target) 
+{
+	return 3;
+}
