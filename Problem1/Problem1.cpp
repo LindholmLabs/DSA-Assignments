@@ -7,26 +7,52 @@
 
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
+// Function prototype
+vector<int> bucketSort(vector<int> unsorted_vector);
+string vectorToString(vector<int> vector);
+
 int main()
 {
-	vector<int> unsorted_vector = { 41, 12, 53, 14, 5, 62, 7, 28, 9 };
-	int target = 53;
-	int result = bucketSort(unsorted_vector, target);
-	printf("The target is located at index %i", result);
+	vector<int> unsorted = { 41, 12, 53, 14, 5, 62, 7, 28, 9 };
+	vector<int> sorted = bucketSort(unsorted);
+
+	printf("The unsorted vector: %s\nThe sorted vector: %s",
+		vectorToString(unsorted), vectorToString(sorted));
+
 	return 0;
 }
 
 
 /*
  * Function: bucketSort
- * Find the target number in the unsorted vector
- * @param unsorted_vector: the unsorted vector
- * @param target: the target number
+ * Sort an unsorted vector using bucket sort
+ * @param v: the unsorted vector
+ * @return: the sorted vector
  */
-int bucketSort(vector<int> unsorted_vector, int target) 
+vector<int> bucketSort(vector<int> v) 
 {
-	return 3;
+	
+}
+
+
+/*
+ * Function: vectorToString
+ * Print a vector
+ * @param vector: the vector to print
+ * @return: the string representation of the vector
+ */
+string vectorToString(vector<int> vector)
+{
+	string output = "{";
+	for (int i = 0; i < vector.size(); i++)
+	{
+		output += to_string(vector[i]) + ", ";
+	}
+	output += "}";
+
+	return output;
 }
