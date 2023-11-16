@@ -8,12 +8,14 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <string>
 
 using namespace std;
 
 // Function prototypes
 vector<int> bucketSort(vector<int> unsortedVector);
 string vectorToString(vector<int> vector);
+int findMax(vector<int> v);
 
 int main()
 {
@@ -35,7 +37,51 @@ int main()
  */
 vector<int> bucketSort(vector<int> v) 
 {
+	int max = findMax(v);
+
+	// Create buckets
+	vector<int> w(max + 1);
 	
+	// Add values to buckets
+	for (int i = 0; i < v.size(); i++)
+	{
+		w[v[i]] = v[i];
+	}
+
+	// Create sorted vector
+	vector<int> sorted(0);
+
+	// Append from buckets in order to sorted vector
+	for (int i = 0; i < w.size(); i++)
+	{
+		
+		if (w[i] != NULL || w[i] != 0)
+		{
+			sorted.push_back(w[i]);
+		}
+	}
+
+	return sorted;
+}
+
+/*
+ * Function: findMax
+ * Find the maximum value in a vector
+ * @param v: the vector to search
+ * @return: the maximum value in the vector
+ */
+int findMax(vector<int> v)
+{
+	int max = v[0];
+	for (int i = 1; i < v.size(); i++)
+	{
+		if (v[i] > max)
+		{
+			max = v[i];
+		}
+	}
+
+	return max;
 }
 
 
