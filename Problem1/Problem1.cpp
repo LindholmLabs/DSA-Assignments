@@ -1,7 +1,7 @@
 // Problem 1: Bucket Sort
 // Description: Find the target number in the unsorted vector
 // Course: IT405G - Datastructures and Algorithms
-// Authors: William Lindholm, Lili Tran
+// Authors: William Lindholm, Lili Tran, Victor Adamson
 // Date: 13-11-2023
 //
 
