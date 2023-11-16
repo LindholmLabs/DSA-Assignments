@@ -11,8 +11,8 @@
 
 using namespace std;
 
-// Function prototype
-vector<int> bucketSort(vector<int> unsorted_vector);
+// Function prototypes
+vector<int> bucketSort(vector<int> unsortedVector);
 string vectorToString(vector<int> vector);
 
 int main()
@@ -20,8 +20,8 @@ int main()
 	vector<int> unsorted = { 41, 12, 53, 14, 5, 62, 7, 28, 9 };
 	vector<int> sorted = bucketSort(unsorted);
 
-	printf("The unsorted vector: %s\nThe sorted vector: %s",
-		vectorToString(unsorted), vectorToString(sorted));
+	cout << "The unsorted vector: " << vectorToString(unsorted) << endl;
+	cout << "The sorted vector: " << vectorToString(sorted) << endl;
 
 	return 0;
 }
@@ -50,7 +50,11 @@ string vectorToString(vector<int> vector)
 	string output = "{";
 	for (int i = 0; i < vector.size(); i++)
 	{
-		output += to_string(vector[i]) + ", ";
+		output += to_string(vector[i]);
+		if (i != vector.size() - 1)
+		{
+			output += ", ";
+		}
 	}
 	output += "}";
 
