@@ -19,7 +19,7 @@ int findMax(vector<int> v);
 
 int main()
 {
-	vector<int> unsorted = { 41, 12, 53, 14, 5, 62, 7, 28, 9 };
+	vector<int> unsorted = { 41, 12, 12, 53, 14, 5, 62, 7, 12, 28, 9 };
 	vector<int> sorted = bucketSort(unsorted);
 
 	cout << "The unsorted vector: " << vectorToString(unsorted) << endl;
@@ -39,13 +39,13 @@ vector<int> bucketSort(vector<int> v)
 {
 	int max = findMax(v);
 
-	// Create buckets
-	vector<int> w(max + 1);
+	// Create buckets (each bucket is a vector)
+	vector<vector<int>> w(max + 1, vector<int>());
 	
 	// Add values to buckets
 	for (int i = 0; i < v.size(); i++)
 	{
-		w[v[i]] = v[i];
+		w[v[i]].push_back(v[i]);
 	}
 
 	// Create sorted vector
@@ -54,10 +54,11 @@ vector<int> bucketSort(vector<int> v)
 	// Append from buckets in order to sorted vector
 	for (int i = 0; i < w.size(); i++)
 	{
-		
-		if (w[i] != NULL || w[i] != 0)
+		if (!w[i].empty())
 		{
-			sorted.push_back(w[i]);
+			for (int x : w[i]) {
+				sorted.push_back(x);
+			}
 		}
 	}
 
