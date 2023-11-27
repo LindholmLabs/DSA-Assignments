@@ -16,6 +16,7 @@ using namespace std;
 
 // Function prototypes
 vector<int> bucketSort(vector<int> unsortedVector);
+vector<int> insertSort(vector<int> unsortedVector);
 string vectorToString(vector<int> vector);
 int findMax(vector<int> v);
 
@@ -24,9 +25,10 @@ int main()
 {
 	vector<int> unsorted = { 41, 12, 12, 53, 14, 5, 62, 7, 12, 28, 9 };
 	vector<int> sorted = bucketSort(unsorted);
-
+	vector<int> funny = insertSort(unsorted);
 	cout << "The unsorted vector: " << vectorToString(unsorted) << endl;
 	cout << "The sorted vector: " << vectorToString(sorted) << endl;
+	cout << "The sorted vector using InsertSort: " << vectorToString(funny) << endl;
 
 	return 0;
 }
@@ -68,13 +70,28 @@ vector<int> bucketSort(vector<int> v)
 	return sorted;
 }
 
+/*
+ * Function: insertSort
+ * Sort an unsorted vector using insertionsort
+ * @param v: the unsorted vector
+ * @return: the sorted vector
+ */
 vector<int> insertSort(vector<int> v) 
 {
-	int i, j, temp;
+	int i, j, key;
 	for (i = 0; i < v.size(); i++) 
 	{
+		key = v[i];
+		j = i - 1;
 		
+		while (j >= 0 && v[j] > key)
+		{
+			v[j + 1] = v[j];
+			j = j - 1;
+		}
+		v[j + 1] = key;
 	}
+	return v;
 }
 
 /*
