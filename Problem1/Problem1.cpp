@@ -70,6 +70,14 @@ vector<int> bucketSort(vector<int> v)
 	return sorted;
 }
 
+vector<int> insertSort(vector<int> v) 
+{
+	int i, j, temp;
+	for (i = 0; i < v.size(); i++) 
+	{
+		
+	}
+}
 
 /*
  * Function: findMax
