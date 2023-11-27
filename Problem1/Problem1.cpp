@@ -1,5 +1,5 @@
 // Problem 1: Bucket Sort
-// Description: Find the target number in the unsorted vector
+// Description: Sort a vector using a modified version of bucket sort.
 // Course: IT405G - Datastructures and Algorithms
 // Authors: William Lindholm, Lili Tran, Victor Adamson
 // Date: 13-11-2023
@@ -36,7 +36,7 @@ int main()
 
 /*
  * Function: bucketSort
- * Sort an unsorted vector using bucket sort
+ * Sort an unsorted vector using a modified version of bucket sort
  * @param v: the unsorted vector
  * @return: the sorted vector
  */
@@ -59,10 +59,12 @@ vector<int> bucketSort(vector<int> v)
 	// Append from buckets in order to sorted vector
 	for (int i = 0; i < (int) w.size(); i++)
 	{
+		//check if bucket is empty
 		if (!w[i].empty())
 		{
-			for (int x : w[i]) {
-				sorted.push_back(x);
+			// loop through each bucket
+			for (int value : w[i]) {
+				sorted.push_back(value);
 			}
 		}
 	}
