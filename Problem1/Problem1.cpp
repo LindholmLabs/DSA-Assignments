@@ -25,10 +25,10 @@ int main()
 {
 	vector<int> unsorted = { 41, 12, 12, 53, 14, 5, 62, 7, 12, 28, 9 };
 	vector<int> sorted = bucketSort(unsorted);
-	vector<int> funny = insertSort(unsorted);
+	vector<int> insertSorted = insertSort(unsorted);
 	cout << "The unsorted vector: " << vectorToString(unsorted) << endl;
 	cout << "The sorted vector: " << vectorToString(sorted) << endl;
-	cout << "The sorted vector using InsertSort: " << vectorToString(funny) << endl;
+	cout << "The sorted vector using InsertSort: " << vectorToString(insertSorted) << endl;
 
 	return 0;
 }
