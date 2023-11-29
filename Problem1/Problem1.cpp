@@ -10,54 +10,25 @@
 #include <vector>
 #include <sstream>
 #include <string>
-#include <chrono>
-#include <algorithm>
 
 using namespace std;
 
 
 // Function prototypes
 vector<int> bucketSort(vector<int> unsortedVector);
-vector<int> insertionSort(vector<int> unsortedVector);
+vector<int> insertSort(vector<int> unsortedVector);
 string vectorToString(vector<int> vector);
 int findMax(vector<int> v);
-vector<int> generateRandomVector(int low, int high, int size);
-void showProgressBar(int width, double progress);
+
 
 int main()
 {
-	int iterations = 100;
-
-	srand(12345);
-
-	vector<double> durations(iterations);
-
-	for (int i = 0; i < iterations; i++) {
-
-		showProgressBar(100, (double)i / iterations);
-
-		vector<int> unsorted = generateRandomVector(0, 999999, 100000);
-
-		auto start = chrono::high_resolution_clock::now();
-
-		vector<int> sorted = bucketSort(unsorted);
-
-		auto end = chrono::high_resolution_clock::now();
-
-		chrono::duration<double> elapsed = end - start;
-
-		durations[i] = elapsed.count();
-	}
-	
-	//find highest duration
-	auto highest = max_element(durations.begin(), durations.end());
-
-	cout << "\nThe highest duration was: " << *highest << endl;
-
-	//vector<int> insertSorted = insertionSort(unsorted);
-	//cout << "The unsorted vector: " << vectorToString(unsorted) << endl;
-	//cout << "The sorted vector: " << vectorToString(sorted) << endl;
-	//cout << "The sorted vector using InsertSort: " << vectorToString(insertSorted) << endl;
+	vector<int> unsorted = { 41, 12, 12, 53, 14, 5, 62, 7, 12, 28, 9 };
+	vector<int> sorted = bucketSort(unsorted);
+	vector<int> insertSorted = insertSort(unsorted);
+	cout << "The unsorted vector: " << vectorToString(unsorted) << endl;
+	cout << "The sorted vector: " << vectorToString(sorted) << endl;
+	cout << "The sorted vector using InsertSort: " << vectorToString(insertSorted) << endl;
 
 	return 0;
 }
@@ -107,7 +78,7 @@ vector<int> bucketSort(vector<int> v)
  * @param v: the unsorted vector
  * @return: the sorted vector
  */
-vector<int> insertionSort(vector<int> v) 
+vector<int> insertSort(vector<int> v) 
 {
 	int i, j, key;
 	for (i = 0; i < v.size(); i++) 
@@ -166,42 +137,4 @@ string vectorToString(vector<int> vector)
 	output += "}";
 
 	return output;
-}
-
-
-/*
-* Function: generateRandomVector
-* Generate a random vector of a given size
-* @param low: the lowest possible value in the vector
-* @param high: the highest possible value in the vector
-* @param size: the size of the vector to generate
-*/
-vector<int> generateRandomVector(int low, int high, int size)
-{
-	vector<int> v(size);
-	for (int i = 0; i < size; i++)
-	{
-		v[i] = rand() % (high - low + 1) + low;
-	}
-
-	return v;
-}
-
-/*
-* Function: showProgressBar
-* Show a progress bar in the console
-* @param width: the width of the progress bar
-* @param progress: the progress of the bar
-*/
-void showProgressBar(int width, double progress) {
-	int pos = width * progress;
-
-	cout << "[";
-	for (int i = 0; i < width; ++i) {
-		if (i < pos) cout << "=";
-		else if (i == pos) cout << ">";
-		else cout << " ";
-	}
-	cout << "] " << int(progress * 100.0) << " %\r";
-	cout.flush(); // Important to flush the output
 }
