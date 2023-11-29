@@ -1,20 +1,94 @@
-// Problem3.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// Problem 1: Huffman Coding
+// Description: Implement a Huffman coding algorithm.
+// Course: IT405G - Datastructures and Algorithms
+// Authors: William Lindholm, Lili Tran, Victor Adamson
+// Date: 29-11-2023
 //
 
+
 #include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+
+struct node
+{
+	char data;
+	int freq = 0;
+	node* left = NULL;
+	node* right = NULL;
+};
+
+
+class nodeComparator
+{
+	public:
+		bool operator() (const node& leftNode, const node& rightNode) const
+		{
+			return leftNode.freq > rightNode.freq;
+		}
+};
+
+
+/*
+ * Class: HuffmanTree
+ * Description: A Huffman tree
+ */
+class huffmanTree
+{
+	private:
+		priority_queue<node, vector<node>, nodeComparator> nodes;
+
+	public:
+		/*
+		 * Function: Constructor
+		 * Description: Create a Huffman tree from a string
+		 * @param plainText: the string to create the tree 
+		 */
+		huffmanTree(string plainText)
+		{
+			// create nodes 
+			for (int i = 0; i < (int) plainText.length(); i++)
+			{
+				node n;
+				n.data = plainText[i];
+				n.freq += 1;
+				nodes.push(n);
+			}
+		}
+			
+		/*
+		 * Function: getTree
+		 * Description: Get the Huffman tree
+		 * @return: reference of ´the Huffman tree
+		 */
+		priority_queue<node, vector<node>, nodeComparator> getTree() const
+		{
+			return nodes;
+		}
+
+		/*
+		 * Function: printTree
+		 * Description: Print the Huffman tree
+		 */
+		void print() const
+		{
+			priority_queue<node, vector<node>, nodeComparator> temp = nodes;
+
+			while (!temp.empty())
+			{
+				cout << temp.top().data << " " << temp.top().freq << endl;
+				temp.pop();
+			}
+		}
+};
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
-}
+	huffmanTree T = huffmanTree("Hello World");
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+	T.print();
+};
