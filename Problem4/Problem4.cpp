@@ -16,6 +16,9 @@ using namespace std;
 // T(1) = 1
 // Recursive function to calculate T(n)
 int T(int n) {
+    if (n == 1)
+        return 1;
+
     int result = T(n - 1) + T(ceil(n / 2.0)) + n;
 
     return result;
