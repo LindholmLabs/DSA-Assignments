@@ -12,83 +12,172 @@
 
 using namespace std;
 
-
-struct node
+class Tree
 {
-	char data;
-	int freq = 0;
-	node* left = NULL;
-	node* right = NULL;
+public:
+	/*
+	* Constructor for leaf node
+	* @param w: the weight of the node
+	* @param c: the character of the node
+	*/
+	Tree(int w, char c)
+	{
+		this->weight = w;
+		this->c = c;
+	}
+
+	/*
+	* Constructor for internal node
+	* @param w: the weight of the node
+	* @param t1: the left subtree
+	* @param t2: the right subtree
+	*/
+	Tree(int w, Tree* t1, Tree* t2)
+	{
+		this->weight = w;
+		this->left = t1;
+		this->right = t2;
+	}
+
+	/*
+	* Destructor
+	*/
+	~Tree()
+	{
+		delete(left);
+		delete(right);
+	}
+
+	/*
+	* Get the weight of the node
+	* @return: the weight of the node
+	*/
+	int getWeight() const
+	{
+		return this->weight;
+	}
+
+	/*
+	* Print the tree
+	* Example of output:
+	*	0 : a
+	*	1 0 : c
+	*	1 1 : b
+	* @param bitString: the bitstring of the node
+	*/
+	void printTree(vector<char>& bitString) const
+	{
+
+	}
+
+private:
+	Tree* left;
+	Tree* right;
+	int weight;
+	char c;
 };
 
-
-class nodeComparator
+struct TreeWrapper
 {
-	public:
-		bool operator() (const node& leftNode, const node& rightNode) const
-		{
-			return leftNode.freq > rightNode.freq;
-		}
-};
+	TreeWrapper()
+	{
+		tree = NULL;
+	}
 
+	TreeWrapper(Tree* t)
+	{
+		tree = t;
+	}
+
+	bool operator<(const TreeWrapper& tw) const
+	{
+		return tree->getWeight() > tw.tree->getWeight();
+	}
+
+	Tree* tree;
+};
 
 /*
- * Class: HuffmanTree
- * Description: A Huffman tree
- */
-class huffmanTree
+* Function: calculateWeight
+* Calculate the weight of a string
+* @param plainText: the string to calculate the weight of
+* @param targetLetter: the letter to calculate the weight of
+*/
+int calculateWeight(string plainText, char targetLetter)
 {
-	private:
-		priority_queue<node, vector<node>, nodeComparator> nodes;
+	int weight = 0;
+	for (int i = 0; i < (int)plainText.size(); i++)
+	{
+		if (plainText[i] == targetLetter)
+		{
+			weight++;
+		}
+	}
+	return weight;
+}
 
+class HuffmanTree
+{
 	public:
 		/*
-		 * Function: Constructor
-		 * Description: Create a Huffman tree from a string
-		 * @param plainText: the string to create the tree 
+		 * Constructor
+		 * @param plainText: the string to encode
 		 */
-		huffmanTree(string plainText)
+		HuffmanTree(string plainText)
 		{
-			// create nodes 
-			for (int i = 0; i < (int) plainText.length(); i++)
-			{
-				node n;
-				n.data = plainText[i];
-				n.freq += 1;
-				nodes.push(n);
-			}
+			this->plainText = plainText;
 		}
+
+		/*
+		 * Encode the string
+		 * @return: the encoded string
+		 */
+		string encode()
+		{
+			auto subTrees = buildSubTrees();
+			auto root = buildTree(subTrees);
+
+			return "";
+		}
+
+	private:
+		string plainText;
+
+		priority_queue<TreeWrapper> buildSubTrees()
+		{
+			priority_queue<TreeWrapper> q;
+
+			for (int i = 0; i < (int)plainText.size(); i++)
+			{
+				int weight = calculateWeight(plainText, plainText[i]);
+				q.push(TreeWrapper(new Tree(weight, plainText[i])));
+			}
+
+			return q;
+		}
+
+		priority_queue<TreeWrapper> buildTree(priority_queue<TreeWrapper> q)
+		{
+			if (q.size() == 1)
+			{
+				return q;
+			}
+
+			TreeWrapper t1 = q.top();
+			q.pop();
+			TreeWrapper t2 = q.top();
+			q.pop();
+			q.push(TreeWrapper(new Tree(t1.tree->getWeight() + t2.tree->getWeight(), t1.tree, t2.tree)));
 			
-		/*
-		 * Function: getTree
-		 * Description: Get the Huffman tree
-		 * @return: reference of ´the Huffman tree
-		 */
-		priority_queue<node, vector<node>, nodeComparator> getTree() const
-		{
-			return nodes;
-		}
-
-		/*
-		 * Function: printTree
-		 * Description: Print the Huffman tree
-		 */
-		void print() const
-		{
-			priority_queue<node, vector<node>, nodeComparator> temp = nodes;
-
-			while (!temp.empty())
-			{
-				cout << temp.top().data << " " << temp.top().freq << endl;
-				temp.pop();
-			}
+			return buildTree(q);
 		}
 };
 
 
 int main()
 {
-	huffmanTree T = huffmanTree("Hello World");
-
-	T.print();
+	HuffmanTree huffmanTree("abacabad");
+	string encoded = huffmanTree.encode();
+	
+	cout << "The string was encoded to: " << encoded << endl;
 };
