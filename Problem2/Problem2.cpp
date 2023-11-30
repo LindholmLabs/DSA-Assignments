@@ -39,8 +39,8 @@ bool Graph::isEdge(int v, int w) {
         if (w == *i) {
             return(true);
         }
-        return(false);
     }
+    return(false);
 }
 
 int Graph::getNumNodes() {
@@ -61,19 +61,19 @@ void Graph::BFS(int v)
     vector<bool> visited;
     visited.resize(V, false);
 
-    list<int> queue;
+    queue<int> queue;
 
     visited[v] = true;
-    queue.push_back(v);
+    queue.push(v);
 
     while (!queue.empty()) {
         v = queue.front();
         cout << v << " ";
-        queue.pop_front();
+        queue.pop();
         for (auto adjacent : adj[v]) {
             if (!visited[adjacent]) {
                 visited[adjacent] = true;
-                queue.push_back(adjacent);
+                queue.push(adjacent);
             }
         }
     }
@@ -87,7 +87,7 @@ int main(){
     network.addEdge(2, 3); //C dislikes D
     network.addEdge(2, 1); //C dislikes B
     network.printGraph();
-    
+
     const int i = network.getNumNodes();
     list<int> nodes[4];
     cout << "\n" << "Number of nodes: " << i << "\n";
