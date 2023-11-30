@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <unordered_map>
 
 using namespace std;
 
@@ -24,7 +25,7 @@ int T(int n) {
         return 1;
     }
 
-    // Recursive case: calculate T(n-1) and T(ceil(n/2)) if not already done
+    // Calculate T(n-1) and T(ceil(n/2)) if not already done
     int result = T(n - 1) + T(std::ceil(n / 2.0)) + n;
 
     // Store the result in the map before returning
