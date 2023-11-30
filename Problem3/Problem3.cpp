@@ -1,4 +1,4 @@
-// Problem 1: Huffman Coding
+﻿// Problem 1: Huffman Coding
 // Description: Implement a Huffman coding algorithm.
 // Course: IT405G - Datastructures and Algorithms
 // Authors: William Lindholm, Lili Tran, Victor Adamson
@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <map>
 
 using namespace std;
 
@@ -65,9 +66,60 @@ public:
 	*	1 1 : b
 	* @param bitString: the bitstring of the node
 	*/
-	void printTree(vector<char>& bitString) const
+	void printTree(vector<char>& bitString)
 	{
+		// Base Case: If it's a leaf node, print the character and its code
+		if (!left && !right) {
+			string bitStringStr(bitString.begin(), bitString.end());
+			cout << bitStringStr << ": " << this->c << endl;
+			return;
+		}
 
+		// Recursive Case: Traverse left and right subtrees
+		if (left)
+		{
+			vector<char> temp = bitString;
+			temp.push_back('0');
+			left->printTree(temp);
+		}
+		if (right)
+		{
+			vector<char> temp = bitString;
+			temp.push_back('1');
+			right->printTree(temp);
+		}
+	}
+
+	/*
+	* Print the tree as a graph
+	* Example of output:
+	* +-- 10
+    * +-- A : 4
+    * |-- 6
+    * |   +-- B : 3
+    * |   |-- 3
+    * |   |   +-- D : 1
+    * |   |   |-- C : 2
+	*/
+	void printGraph(const string& prefix = "", bool isLeft = true)
+	{
+		// Check if the current node is a leaf node
+		if (!left && !right) {
+			cout << prefix << (isLeft ? "+-- " : "|-- ") << this->c << " : " << weight << endl;
+			return;
+		}
+
+		// If not a leaf node, print the node weight
+		cout << prefix << (isLeft ? "+-- " : "|-- ") << weight << endl;
+
+		// Construct the next level prefix
+		string childPrefix = prefix + (isLeft ? "    " : "|   ");
+
+		// Recursive calls for left and right children
+		if (left)
+			left->printGraph(childPrefix, true);
+		if (right)
+			right->printGraph(childPrefix, false);
 	}
 
 private:
@@ -116,14 +168,14 @@ int calculateWeight(string plainText, char targetLetter)
 	return weight;
 }
 
-class HuffmanTree
+class HuffmanEncoder
 {
 	public:
 		/*
 		 * Constructor
 		 * @param plainText: the string to encode
 		 */
-		HuffmanTree(string plainText)
+		HuffmanEncoder(string plainText)
 		{
 			this->plainText = plainText;
 		}
@@ -134,23 +186,57 @@ class HuffmanTree
 		 */
 		string encode()
 		{
-			auto subTrees = buildSubTrees();
-			auto root = buildTree(subTrees);
+			auto subTrees = createLeaves();
+			this->root = buildTree(subTrees);
+
 
 			return "";
 		}
 
+		/*
+		* Generate the bitstring for each character
+		* @return: a map of characters and their bitstrings
+		*/
+		map<char, string> generateBitStrings()
+		{
+			map<char, string> bitStrings;
+			vector<char> bitString;
+			root.top().tree->printTree(bitString);
+			return bitStrings;
+		}
+
+		/*
+		* Get the root of the tree
+		* @return: the root of the 
+		*/
+		Tree* getRoot()
+		{
+			return root.top().tree;
+		}
+
 	private:
 		string plainText;
+		priority_queue<TreeWrapper> root;
 
-		priority_queue<TreeWrapper> buildSubTrees()
+		priority_queue<TreeWrapper> createLeaves()
 		{
 			priority_queue<TreeWrapper> q;
 
+			//build map of characters and their weights
+
+			map<char, int> charWeights;
 			for (int i = 0; i < (int)plainText.size(); i++)
 			{
-				int weight = calculateWeight(plainText, plainText[i]);
-				q.push(TreeWrapper(new Tree(weight, plainText[i])));
+				if (charWeights.find(plainText[i]) == charWeights.end())
+				{
+					charWeights[plainText[i]] = calculateWeight(plainText, plainText[i]);
+				}
+			}
+
+			// create leaves and push them to the queue
+			for (auto it = charWeights.begin(); it != charWeights.end(); it++)
+			{
+				q.push(TreeWrapper(new Tree(it->second, it->first)));
 			}
 
 			return q;
@@ -176,8 +262,11 @@ class HuffmanTree
 
 int main()
 {
-	HuffmanTree huffmanTree("abacabad");
+	HuffmanEncoder huffmanTree("aaaabbbc");
 	string encoded = huffmanTree.encode();
-	
-	cout << "The string was encoded to: " << encoded << endl;
+	Tree* root = huffmanTree.getRoot();
+	//create empty char vector
+	vector<char> bitString;
+	root->printTree(bitString);
+	root->printGraph();
 };
