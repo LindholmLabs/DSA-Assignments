@@ -7,24 +7,40 @@
 
 #include <iostream>
 #include <cmath>
+#include <unordered_map>
 
 using namespace std;
 
-// Temp
-// Från labbanvisningarna
-// T(n) = T(n-1)+T([n/2])+n
-// T(1) = 1
-// Recursive function to calculate T(n)
+// A map to store already calculated results
+unordered_map<int, int> storage;
+
 int T(int n) {
-    int result = T(n - 1) + T(ceil(n / 2.0)) + n;
+    // Check if the result for n is already computed
+    if (storage.find(n) != storage.end()) {
+        return storage[n];
+    }
+
+    // Base case
+    if (n == 1) {
+        return 1;
+    }
+
+    // Calculate T(n-1) and T(ceil(n/2)) if not already done
+    int result = T(n - 1) + T(std::ceil(n / 2.0)) + n;
+
+    // Store the result in the map before returning
+    storage[n] = result;
 
     return result;
 }
 
 int main() {
     int n;
-    cout << "Enter a value for n: ";
+    cout << "Enter the value of n: ";
     cin >> n;
-    cout << "T(" << n << ") = " << T(n) << endl;
+
+    // Compute and print the result
+    cout << "T(" << n << ") = " << T(n) << std::endl;
+
     return 0;
 }
