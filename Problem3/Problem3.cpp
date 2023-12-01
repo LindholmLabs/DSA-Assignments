@@ -1,4 +1,4 @@
-﻿// Problem 1: Huffman Coding
+﻿// Problem 3: Huffman Coding
 // Description: Implement a Huffman coding algorithm.
 // Course: IT405G - Datastructures and Algorithms
 // Authors: William Lindholm, Lili Tran, Victor Adamson
