@@ -17,7 +17,7 @@ private:
     vector<int>* adj;
 public:
     Graph(int V);
-    void addEdge(int v, int w);
+    void addEdge(int v, int w); //v == Source node, w == Destintaion node
     bool isEdge(int v, int w);
     int getNumNodes();
     void printGraph();
@@ -92,10 +92,16 @@ int main(){
     list<int> nodes[4];
     cout << "\n" << "Number of nodes: " << i << "\n";
     cout << "Breadth First Traversal from A: \n";
-    network.BFS(0);
+    network.BFS(0); //Traversal from 0 = A, 1 = B, 2 = C, 3 = D
 }
 
-bool isAdversary(Graph network) {
-    
+vector<int> findFriends(Graph network) {
+    vector<int> friends;
+
+    return friends;
+}
+
+bool isFriend(Graph network) {
+
     return true;
 }
