@@ -22,6 +22,7 @@ public:
     int getNumNodes();
     void printGraph();
     void BFS(int v);
+    list<int> getNeighbours(int s);
 };
 
 Graph::Graph(int V) {
@@ -43,6 +44,7 @@ bool Graph::isEdge(int v, int w) {
     }
 }
 
+
 int Graph::getNumNodes() {
     return V;
 }
@@ -56,6 +58,38 @@ void Graph::printGraph() {
         }
     }
 }
+
+list<int> Graph::getNeighbours(int s) {
+    list<int> neighbours;
+    
+    vector<int>::iterator i;
+    for (i = adj[s].begin(); i != adj[s].end(); ++i) {
+        cout << "-> " << *i << " ";
+    }
+
+    return neighbours;
+}
+
+/*
+* Function: printList
+* Description: Print a list of integers
+* @param l: the list to print
+*/
+void printList(list<int> l)
+{
+    for (int i = 0; i < (int)l.size(); i++)
+    {
+        cout << l.front();
+        l.pop_front();
+	}
+	cout << endl;
+}
+
+/*
+* Function: BFS
+* Description: Find the shortest path from a node to all other nodes
+* @param v: the starting node
+*/
 void Graph::BFS(int v)
 {
     vector<bool> visited;
@@ -87,6 +121,11 @@ int main(){
     network.addEdge(2, 3); //C dislikes D
     network.addEdge(2, 1); //C dislikes B
     network.printGraph();
+
+    list<int> neighbours = network.getNeighbours(2);
+
+    cout << "printing neighbours: \n";
+    printList(neighbours);
     
     const int i = network.getNumNodes();
     list<int> nodes[4];
