@@ -21,7 +21,8 @@ public:
     bool isEdge(int v, int w);
     int getNumNodes();
     void printGraph();
-    void BFS(int v);
+    bool BFS(int v, int w, int dist[]);
+    void printShortPath(int v, int w);
 };
 
 Graph::Graph(int V) {
@@ -31,6 +32,7 @@ Graph::Graph(int V) {
 
 void Graph::addEdge(int v, int w) {
     adj[v].push_back(w);
+    adj[w].push_back(v);
 }
 
 bool Graph::isEdge(int v, int w) {
@@ -56,14 +58,21 @@ void Graph::printGraph() {
         }
     }
 }
-void Graph::BFS(int v)
+bool Graph::BFS(int v, int w, int dist[])
 {
     vector<bool> visited;
     visited.resize(V, false);
 
     list<int> queue;
 
+    for (int i = 0; i < V; i++) {
+        visited[i] = false;
+        dist[i] = INT_MAX;
+
+    }
+
     visited[v] = true;
+    dist[v] = 0;
     queue.push_back(v);
 
     while (!queue.empty()) {
@@ -73,10 +82,19 @@ void Graph::BFS(int v)
         for (auto adjacent : adj[v]) {
             if (!visited[adjacent]) {
                 visited[adjacent] = true;
+                dist[v] = dist[v] + 1;
                 queue.push_back(adjacent);
+                if (adjacent == w) {
+                    return true;
+                }
             }
         }
     }
+    return false;
+}
+
+void Graph::printShortPath(int v, int w) {
+    
 }
 
 int main(){
@@ -92,7 +110,7 @@ int main(){
     list<int> nodes[4];
     cout << "\n" << "Number of nodes: " << i << "\n";
     cout << "Breadth First Traversal from A: \n";
-    network.BFS(0); //Traversal from 0 = A, 1 = B, 2 = C, 3 = D
+    //network.BFS(0, 3); //Traversal from source to destination (0 = A, 1 = B, 2 = C, 3 = D)
 }
 
 vector<int> findFriends(Graph network) {
