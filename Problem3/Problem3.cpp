@@ -66,48 +66,32 @@ public:
 	*	1 1 : b
 	* @param bitString: the bitstring of the node
 	*/
-	void printTree(const vector<char>& bitString = vector<char>()) const
+	void printTree(const string& bitString = "") const
 	{
-		// Base Case: If it's a leaf node, print the character and its code
 		if (!left && !right) {
-			string bitStringStr(bitString.begin(), bitString.end());
-			cout << bitStringStr << ": " << this->c << endl;
+			cout << bitString << ": " << c << endl;
 			return;
 		}
 
-		// Recursive Case: Traverse left and right subtrees
-		if (left)
-		{
-			vector<char> temp = bitString;
-			temp.push_back('0');
-			left->printTree(temp);
-		}
-		if (right)
-		{
-			vector<char> temp = bitString;
-			temp.push_back('1');
-			right->printTree(temp);
-		}
+		if (left) left->printTree(bitString + "0");
+		if (right) right->printTree(bitString + "1");
 	}
 
-	map<char, string> constructMap(Tree* root, map<char, string>& codes, string bitString = "")
+	/*
+	* Construct a map of the characters and their codes
+	* Since codes is passed as a reference, it will be modified
+	* @param codes: the map to construct
+	* @param bitString: the bitstring of the node
+	*/
+	void constructMap(map<char, string>& codes, const string& bitString = "")
 	{
-		if (!root->left && !root->right)
-		{
-			codes[root->c] = bitString;
-			return codes;
+		if (!left && !right) {
+			codes[c] = bitString;
+			return;
 		}
 
-		if (root->left)
-		{
-			constructMap(root->left, codes, bitString + "0");
-		}
-		if (root->right)
-		{
-			constructMap(root->right, codes, bitString + "1");
-		}
-
-		return codes;
+		if (left) left->constructMap(codes, bitString + "0");
+		if (right) right->constructMap(codes, bitString + "1");
 	}
 
 private:
@@ -173,10 +157,14 @@ public:
 		this->huffmanTree = buildTree(subTrees);
 		Tree* root = this->getRoot();
 		map<char, string> codes;
-		codes = root->constructMap(root, codes);
+		root->constructMap(codes);
 		return codes;
 	}
 
+	/*
+	* Encode the string
+	* @return: the encoded string
+	*/
 	string encode()
 	{
 		auto codes = getCodes();
