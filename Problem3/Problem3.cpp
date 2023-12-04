@@ -90,6 +90,26 @@ public:
 		}
 	}
 
+	map<char, string> constructMap(Tree* root, map<char, string>& codes, string bitString = "")
+	{
+		if (!root->left && !root->right)
+		{
+			codes[root->c] = bitString;
+			return codes;
+		}
+
+		if (root->left)
+		{
+			constructMap(root->left, codes, bitString + "0");
+		}
+		if (root->right)
+		{
+			constructMap(root->right, codes, bitString + "1");
+		}
+
+		return codes;
+	}
+
 private:
 	Tree* left;
 	Tree* right;
@@ -140,6 +160,33 @@ public:
 		this->huffmanTree = buildTree(subTrees);
 		Tree* root = this->getRoot();
 		root->printTree();
+	}
+
+
+	/*
+	* Get the codes of the characters
+	* @return: a map of the characters and their codes
+	*/
+	map<char, string> getCodes()
+	{
+		auto subTrees = createLeaves();
+		this->huffmanTree = buildTree(subTrees);
+		Tree* root = this->getRoot();
+		map<char, string> codes;
+		codes = root->constructMap(root, codes);
+		return codes;
+	}
+
+	string encode()
+	{
+		auto codes = getCodes();
+		string encodedString = "";
+		for (char c : plainText)
+		{
+			encodedString += codes[c];
+			encodedString += " ";
+		}
+		return encodedString;
 	}
 
 	/*
@@ -207,6 +254,19 @@ private:
 
 int main()
 {
-	HuffmanEncoder huffmanTree("AAAABBBC");
+	string unEncodedString = "AAAABBBCCCCCCCCCCCCCCCCCCCCCCCCCCCD";
+	HuffmanEncoder huffmanTree(unEncodedString);
 	huffmanTree.printCodes();
+
+	string encodedString = huffmanTree.encode();
+	printf("Encoded string: %s\n", encodedString.c_str());
+
+	int unEncodedLen = (int)(unEncodedString.length()*8);
+	int encodedLen = (int)encodedString.length();
+	
+	printf("Unencoded length: %d\n", unEncodedLen);
+	printf("Encoded length: %d\n", encodedLen);
+	printf("saved %d bits\n", unEncodedLen - encodedLen);
+
+	return 0;
 };
