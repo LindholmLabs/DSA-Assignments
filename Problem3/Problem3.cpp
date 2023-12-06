@@ -1,4 +1,4 @@
-// Problem 1: Huffman Coding
+﻿// Problem 3: Huffman Coding
 // Description: Implement a Huffman coding algorithm.
 // Course: IT405G - Datastructures and Algorithms
 // Authors: William Lindholm, Lili Tran, Victor Adamson
@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <map>
 
 using namespace std;
 
@@ -65,9 +66,32 @@ public:
 	*	1 1 : b
 	* @param bitString: the bitstring of the node
 	*/
-	void printTree(vector<char>& bitString) const
+	void printTree(const string& bitString = "") const
 	{
+		if (!left && !right) {
+			cout << bitString << ": " << c << endl;
+			return;
+		}
 
+		if (left) left->printTree(bitString + "0");
+		if (right) right->printTree(bitString + "1");
+	}
+
+	/*
+	* Construct a map of the characters and their codes
+	* Since codes is passed as a reference, it will be modified
+	* @param codes: the map to construct
+	* @param bitString: the bitstring of the node
+	*/
+	void constructMap(map<char, string>& codes, const string& bitString = "")
+	{
+		if (!left && !right) {
+			codes[c] = bitString;
+			return;
+		}
+
+		if (left) left->constructMap(codes, bitString + "0");
+		if (right) right->constructMap(codes, bitString + "1");
 	}
 
 private:
@@ -97,87 +121,140 @@ struct TreeWrapper
 	Tree* tree;
 };
 
-/*
-* Function: calculateWeight
-* Calculate the weight of a string
-* @param plainText: the string to calculate the weight of
-* @param targetLetter: the letter to calculate the weight of
-*/
-int calculateWeight(string plainText, char targetLetter)
+
+class HuffmanEncoder
 {
-	int weight = 0;
-	for (int i = 0; i < (int)plainText.size(); i++)
+public:
+	/*
+	 * Constructor
+	 * @param plainText: the string to encode
+	 */
+	HuffmanEncoder(string plainText)
 	{
-		if (plainText[i] == targetLetter)
-		{
-			weight++;
-		}
+		this->plainText = plainText;
 	}
-	return weight;
-}
 
-class HuffmanTree
-{
-	public:
-		/*
-		 * Constructor
-		 * @param plainText: the string to encode
-		 */
-		HuffmanTree(string plainText)
+	/*
+	 * Encode the string
+	 * @return: the encoded string
+	 */
+	void printCodes()
+	{
+		auto subTrees = createLeaves();
+		this->huffmanTree = buildTree(subTrees);
+		Tree* root = this->getRoot();
+		root->printTree();
+	}
+
+
+	/*
+	* Get the codes of the characters
+	* @return: a map of the characters and their codes
+	*/
+	map<char, string> getCodes()
+	{
+		auto subTrees = createLeaves();
+		this->huffmanTree = buildTree(subTrees);
+		Tree* root = this->getRoot();
+		map<char, string> codes;
+		root->constructMap(codes);
+		return codes;
+	}
+
+	/*
+	* Encode the string
+	* @return: the encoded string
+	*/
+	string encode()
+	{
+		auto codes = getCodes();
+		string encodedString = "";
+		for (char c : plainText)
 		{
-			this->plainText = plainText;
+			encodedString += codes[c];
+			encodedString += " ";
+		}
+		return encodedString;
+	}
+
+	/*
+	* Get the root of the tree
+	* @return: the root of the
+	*/
+	Tree* getRoot()
+	{
+		return huffmanTree.top().tree;
+	}
+
+private:
+	string plainText;
+	priority_queue<TreeWrapper> huffmanTree;
+
+	/*
+	 * Create the leaves of the tree, and push them to a priority queue
+	 * Note: the priority queue is sorted by the weight of the nodes
+	 * But the tree is not built yet
+	 * @return: a priority queue of the leaves
+	 */
+	priority_queue<TreeWrapper> createLeaves()
+	{
+		priority_queue<TreeWrapper> q;
+
+		map<char, int> charWeights;
+
+		// calculate frequencies
+		for (char c : plainText)
+		{
+			charWeights[c]++;
 		}
 
-		/*
-		 * Encode the string
-		 * @return: the encoded string
-		 */
-		string encode()
+		// Create leaves and push them to the queue
+		for (auto& pair : charWeights)
 		{
-			auto subTrees = buildSubTrees();
-			auto root = buildTree(subTrees);
-
-			return "";
+			q.push(TreeWrapper(new Tree(pair.second, pair.first)));
 		}
 
-	private:
-		string plainText;
+		return q;
+	}
 
-		priority_queue<TreeWrapper> buildSubTrees()
+	/*
+	 * Build the tree from the priority queue
+	 * @param q: the priority queue of the leaves
+	 * @return: the root of the tree
+	 */
+	priority_queue<TreeWrapper> buildTree(priority_queue<TreeWrapper> q)
+	{
+		if (q.size() == 1)
 		{
-			priority_queue<TreeWrapper> q;
-
-			for (int i = 0; i < (int)plainText.size(); i++)
-			{
-				int weight = calculateWeight(plainText, plainText[i]);
-				q.push(TreeWrapper(new Tree(weight, plainText[i])));
-			}
-
 			return q;
 		}
 
-		priority_queue<TreeWrapper> buildTree(priority_queue<TreeWrapper> q)
-		{
-			if (q.size() == 1)
-			{
-				return q;
-			}
+		TreeWrapper t1 = q.top();
+		q.pop();
+		TreeWrapper t2 = q.top();
+		q.pop();
+		q.push(TreeWrapper(new Tree(t1.tree->getWeight() + t2.tree->getWeight(), t1.tree, t2.tree)));
 
-			TreeWrapper t1 = q.top();
-			q.pop();
-			TreeWrapper t2 = q.top();
-			q.pop();
-			q.push(TreeWrapper(new Tree(t1.tree->getWeight() + t2.tree->getWeight(), t1.tree, t2.tree)));
-			
-			return buildTree(q);
-		}
+		return buildTree(q);
+	}
 };
 
 
 int main()
 {
-	HuffmanTree huffmanTree("abacabad");
-	string encoded = huffmanTree.encode();
+	string unEncodedString = "AAAABBBCCCCCCCCCCCCCCCCCCCCCCCCCCCD";
+	HuffmanEncoder huffmanTree(unEncodedString);
+	huffmanTree.printCodes();
+
+	string encodedString = huffmanTree.encode();
+	printf("Encoded string: %s\n", encodedString.c_str());
+
+	int unEncodedLen = (int)(unEncodedString.length()*8);
+	int encodedLen = (int)encodedString.length();
 	
-	cout << "The string was encoded to: " << encoded << endl;
+	printf("Unencoded length: %d\n", unEncodedLen);
+	printf("Encoded length: %d\n", encodedLen);
+	printf("saved %d bits\n", unEncodedLen - encodedLen);
+
+	return 0;
 };

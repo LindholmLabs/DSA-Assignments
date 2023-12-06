@@ -17,10 +17,12 @@ private:
     vector<int>* adj;
 public:
     Graph(int V);
-    void addEdge(int v, int w);
+    void addEdge(int v, int w); //v == Source node, w == Destintaion node
     bool isEdge(int v, int w);
     int getNumNodes();
     void printGraph();
+    bool BFS(int v, int w, int dist[]);
+    void printShortPath(int v, int w);
 };
 
 Graph::Graph(int V) {
@@ -30,6 +32,7 @@ Graph::Graph(int V) {
 
 void Graph::addEdge(int v, int w) {
     adj[v].push_back(w);
+    adj[w].push_back(v);
 }
 
 bool Graph::isEdge(int v, int w) {
@@ -50,11 +53,48 @@ void Graph::printGraph() {
     for (int v = 0; v < V; ++v) {
         cout << "\nAdjacency list of node " << v << "\n head ";
         vector<int>::iterator i;
-        for (i = adj[v].begin();
-            i != adj[v].end(); ++i) {
+        for (i = adj[v].begin(); i != adj[v].end(); ++i) {
             cout << "-> " << *i << " ";
         }
     }
+}
+bool Graph::BFS(int v, int w, int dist[])
+{
+    vector<bool> visited;
+    visited.resize(V, false);
+
+    list<int> queue;
+
+    for (int i = 0; i < V; i++) {
+        visited[i] = false;
+        dist[i] = INT_MAX;
+
+    }
+
+    visited[v] = true;
+    dist[v] = 0;
+    queue.push_back(v);
+
+    while (!queue.empty()) {
+        v = queue.front();
+        cout << v << " ";
+        queue.pop_front();
+        for (auto adjacent : adj[v]) {
+            if (!visited[adjacent]) {
+                visited[adjacent] = true;
+                dist[v] = dist[v] + 1;
+                queue.push_back(adjacent);
+                if (adjacent == w) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void Graph::printShortPath(int v, int w) {
+    
 }
 
 int main(){
@@ -65,15 +105,21 @@ int main(){
     network.addEdge(2, 3); //C dislikes D
     network.addEdge(2, 1); //C dislikes B
     network.printGraph();
-    queue<int> queue;
+    
     const int i = network.getNumNodes();
     list<int> nodes[4];
     cout << "\n" << "Number of nodes: " << i << "\n";
-    vector<bool> visited[4];
-    
+    cout << "Breadth First Traversal from A: \n";
+    //network.BFS(0, 3); //Traversal from source to destination (0 = A, 1 = B, 2 = C, 3 = D)
 }
 
-bool isAdversary(Graph network, vector<bool> visited[4]) {
+vector<int> findFriends(Graph network) {
+    vector<int> friends;
+
+    return friends;
+}
+
+bool isFriend(Graph network) {
 
     return true;
 }
