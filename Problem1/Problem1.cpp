@@ -24,35 +24,42 @@ string vectorToString(vector<int> vector);
 int findMax(vector<int> v);
 vector<int> generateRandomVector(int low, int high, int size);
 void showProgressBar(int width, double progress);
-void printuple(tuple<int, double> t);
+void printuple(tuple<int, int, double> t);
 
 int main()
 {
+	int startingSize = 1000;
 	int iterations = 100;
+	int arraySize = 10000;
+	int stepSize = 1000;
 
 	srand(12345);
 
-	vector<tuple<int, double>> durations;
+	vector<tuple<int, int, double>> durations;
 
-	for (int i = 1; i < iterations + 1; i++) {
+	for (int i = startingSize; i < arraySize; i += stepSize) {
+		cout << "\nArray element max value: " << i << endl;
+		for (int j = 1; j < iterations + 1; j++) {
 
-		showProgressBar(100, (double)i / iterations);
+			showProgressBar(100, (double)j / iterations);
 
-		vector<int> unsorted = generateRandomVector(0, 999999, i * 1000);
+			vector<int> unsorted = generateRandomVector(0, i, j * 1000);
 
-		auto start = chrono::high_resolution_clock::now();
+			auto start = chrono::high_resolution_clock::now();
 
-		vector<int> sorted = bucketSort(unsorted);
+			vector<int> sorted = insertionSort(unsorted);
 
-		auto end = chrono::high_resolution_clock::now();
+			auto end = chrono::high_resolution_clock::now();
 
-		chrono::duration<double> elapsed = end - start;
+			chrono::duration<double> elapsed = end - start;
 
-		durations.push_back(make_tuple(i * 1000, elapsed.count()));
+			durations.push_back(make_tuple(i, j * 1000, elapsed.count()));
+		}
 	}
+	
 	cout << endl;
 
-	for (auto t : durations) {
+	for (tuple<int, int, double> t : durations) {
 		printuple(t);
 	}
 
@@ -208,6 +215,6 @@ void showProgressBar(int width, double progress) {
 	cout.flush(); // Important to flush the output
 }
 
-void printuple(tuple<int, double> t) {
-	cout << get<0>(t) << "\t" << get<1>(t) << endl;
+void printuple(tuple<int, int, double> t) {
+	cout << get<0>(t) << ", " << get<1>(t) << ", " << get<2>(t) << endl;
 }
