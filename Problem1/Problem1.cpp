@@ -12,6 +12,7 @@
 #include <string>
 #include <chrono>
 #include <algorithm>
+#include <tuple>
 
 using namespace std;
 
@@ -23,6 +24,7 @@ string vectorToString(vector<int> vector);
 int findMax(vector<int> v);
 vector<int> generateRandomVector(int low, int high, int size);
 void showProgressBar(int width, double progress);
+void printuple(tuple<int, double> t);
 
 int main()
 {
@@ -30,13 +32,13 @@ int main()
 
 	srand(12345);
 
-	vector<double> durations(iterations);
+	vector<tuple<int, double>> durations;
 
-	for (int i = 0; i < iterations; i++) {
+	for (int i = 1; i < iterations + 1; i++) {
 
 		showProgressBar(100, (double)i / iterations);
 
-		vector<int> unsorted = generateRandomVector(0, 999999, 100000);
+		vector<int> unsorted = generateRandomVector(0, 999999, i * 1000);
 
 		auto start = chrono::high_resolution_clock::now();
 
@@ -46,13 +48,13 @@ int main()
 
 		chrono::duration<double> elapsed = end - start;
 
-		durations[i] = elapsed.count();
+		durations.push_back(make_tuple(i * 1000, elapsed.count()));
 	}
+	cout << endl;
 
-	//find highest duration
-	auto highest = max_element(durations.begin(), durations.end());
-
-	cout << "\nThe highest duration was: " << *highest << endl;
+	for (auto t : durations) {
+		printuple(t);
+	}
 
 	//vector<int> insertSorted = insertionSort(unsorted);
 	//cout << "The unsorted vector: " << vectorToString(unsorted) << endl;
@@ -204,4 +206,8 @@ void showProgressBar(int width, double progress) {
 	}
 	cout << "] " << int(progress * 100.0) << " %\r";
 	cout.flush(); // Important to flush the output
+}
+
+void printuple(tuple<int, double> t) {
+	cout << get<0>(t) << "\t" << get<1>(t) << endl;
 }
