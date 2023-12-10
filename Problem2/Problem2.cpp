@@ -49,7 +49,7 @@ int Graph::getNumNodes() {
 }
 
 bool Graph::BFS(int src, int dest, int distance[], int predecessor[]) {
-    list<int> queue;
+    queue<int> queue;
     vector<bool> visited(nodes, false);
 
     for (int i = 0; i < nodes; i++) {
@@ -60,17 +60,17 @@ bool Graph::BFS(int src, int dest, int distance[], int predecessor[]) {
 
     visited[src] = true;
     distance[src] = 0;
-    queue.push_back(src);
+    queue.push(src);
 
     while (!queue.empty()) {
         int current = queue.front();
-        queue.pop_front();
+        queue.pop();
         for (auto adjacent : adj[current]) {
             if (!visited[adjacent]) {
                 visited[adjacent] = true;
                 distance[adjacent] = distance[current] + 1;
                 predecessor[adjacent] = current;
-                queue.push_back(adjacent);
+                queue.push(adjacent);
                 if (adjacent == dest) return true;
             }
         }
