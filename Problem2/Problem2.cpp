@@ -20,7 +20,6 @@ public:
     void addEdge(int src, int dest); //src == Source node, dest == Destintaion node
     bool isEdge(int src, int dest);
     int getNumNodes();
-    void printGraph();
     bool BFS(int src, int dest, int distance[], int predecessor[]);
     void printShortPath(int src, int dest);
 };
@@ -47,16 +46,6 @@ bool Graph::isEdge(int src, int dest) {
 
 int Graph::getNumNodes() {
     return nodes;
-}
-
-void Graph::printGraph() {
-    for (int src = 0; src < nodes; ++src) {
-        cout << "\nAdjacency list of node " << src << "\n head ";
-        vector<int>::iterator i;
-        for (i = adj[src].begin(); i != adj[src].end(); ++i) {
-            cout << "-> " << *i << " ";
-        }
-    }
 }
 
 bool Graph::BFS(int src, int dest, int distance[], int predecessor[]) {
@@ -131,7 +120,6 @@ int main() {
     network.addEdge(1, 3); //B dislikes D
     network.addEdge(2, 3); //C dislikes D
     network.addEdge(2, 1); //C dislikes B
-    //network.printGraph();
     
     cout << endl << "Shortest Path from starting node to end node: \n";
     network.printShortPath(start, end);
