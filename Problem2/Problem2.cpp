@@ -13,32 +13,32 @@ using namespace std;
 
 class Graph {
 private:
-    int V;
+    int nodes; //Number of nodes
     vector<int>* adj;
 public:
-    Graph(int V);
-    void addEdge(int v, int w); //v == Source node, w == Destintaion node
-    bool isEdge(int v, int w);
+    Graph(int nodes);
+    void addEdge(int src, int dest); //src == Source node, dest == Destintaion node
+    bool isEdge(int src, int dest);
     int getNumNodes();
     void printGraph();
-    bool BFS(int v, int w, int dist[]);
-    void printShortPath(int v, int w);
+    bool BFS(int src, int dest, int distance[], int predecessor[]);
+    void printShortPath(int src, int dest);
 };
 
-Graph::Graph(int V) {
-    this->V = V;
-    adj = new vector <int>[V];
+Graph::Graph(int nodes) {
+    this->nodes = nodes;
+    adj = new vector <int>[nodes];
 }
 
-void Graph::addEdge(int v, int w) {
-    adj[v].push_back(w);
-    adj[w].push_back(v);
+void Graph::addEdge(int src, int dest) {
+    adj[src].push_back(dest);
+    adj[dest].push_back(src);
 }
 
-bool Graph::isEdge(int v, int w) {
+bool Graph::isEdge(int src, int dest) {
     vector<int>::iterator i;
-    for (i = adj[v].begin(); i != adj[v].end(); i++) {
-        if (w == *i) {
+    for (i = adj[src].begin(); i != adj[src].end(); i++) {
+        if (dest == *i) {
             return(true);
         }
         return(false);
@@ -46,80 +46,93 @@ bool Graph::isEdge(int v, int w) {
 }
 
 int Graph::getNumNodes() {
-    return V;
+    return nodes;
 }
 
 void Graph::printGraph() {
-    for (int v = 0; v < V; ++v) {
-        cout << "\nAdjacency list of node " << v << "\n head ";
+    for (int src = 0; src < nodes; ++src) {
+        cout << "\nAdjacency list of node " << src << "\n head ";
         vector<int>::iterator i;
-        for (i = adj[v].begin(); i != adj[v].end(); ++i) {
+        for (i = adj[src].begin(); i != adj[src].end(); ++i) {
             cout << "-> " << *i << " ";
         }
     }
 }
-bool Graph::BFS(int v, int w, int dist[])
-{
-    vector<bool> visited;
-    visited.resize(V, false);
 
+bool Graph::BFS(int src, int dest, int distance[], int predecessor[]) {
     list<int> queue;
+    vector<bool> visited(nodes, false);
 
-    for (int i = 0; i < V; i++) {
+    for (int i = 0; i < nodes; i++) {
         visited[i] = false;
-        dist[i] = INT_MAX;
-
+        distance[i] = INT_MAX;
+        predecessor[i] = -1;
     }
 
-    visited[v] = true;
-    dist[v] = 0;
-    queue.push_back(v);
+    visited[src] = true;
+    distance[src] = 0;
+    queue.push_back(src);
 
     while (!queue.empty()) {
-        v = queue.front();
-        cout << v << " ";
+        int current = queue.front();
         queue.pop_front();
-        for (auto adjacent : adj[v]) {
+        for (auto adjacent : adj[current]) {
             if (!visited[adjacent]) {
                 visited[adjacent] = true;
-                dist[v] = dist[v] + 1;
+                distance[adjacent] = distance[current] + 1;
+                predecessor[adjacent] = current;
                 queue.push_back(adjacent);
-                if (adjacent == w) {
-                    return true;
-                }
+                if (adjacent == dest) return true;
             }
         }
     }
     return false;
 }
 
-void Graph::printShortPath(int v, int w) {
-    
+void Graph::printShortPath(int src, int dest) {
+    int* distance = new int[nodes];
+    int* predecessor = new int[nodes];
+    if (BFS(src, dest, distance, predecessor)) {
+        cout << "Path: ";
+        list<int> path;
+        int crawl = dest;
+        path.push_front(crawl);
+        while (predecessor[crawl] != -1) {
+            path.push_front(predecessor[crawl]);
+            crawl = predecessor[crawl];
+        }
+        for (auto i : path) {
+            cout << i << " ";
+        }
+
+        // A node is a friend if the shortest path is even
+        if (distance[dest] % 2 == 0) {
+            cout << endl << "node: " << dest << " is a ";
+            cout << "Friend\n";
+        }
+        else {
+            cout << endl << "node: " << dest << " is an ";
+            cout << "Adversary\n";
+        }
+    }
+    else {
+        cout << "No path found from " << src << " to " << dest << "\n";
+    }
+    delete[] distance;
+    delete[] predecessor;
 }
 
-int main(){
+int main() {
     Graph network(4);
+    int start = 0; // the head-node
+    int end = 2; // the target-node
     network.addEdge(0, 1); //A dislikes B
     network.addEdge(1, 2); //B dislikes C
     network.addEdge(1, 3); //B dislikes D
     network.addEdge(2, 3); //C dislikes D
     network.addEdge(2, 1); //C dislikes B
-    network.printGraph();
+    //network.printGraph();
     
-    const int i = network.getNumNodes();
-    list<int> nodes[4];
-    cout << "\n" << "Number of nodes: " << i << "\n";
-    cout << "Breadth First Traversal from A: \n";
-    //network.BFS(0, 3); //Traversal from source to destination (0 = A, 1 = B, 2 = C, 3 = D)
-}
-
-vector<int> findFriends(Graph network) {
-    vector<int> friends;
-
-    return friends;
-}
-
-bool isFriend(Graph network) {
-
-    return true;
+    cout << endl << "Shortest Path from starting node to end node: \n";
+    network.printShortPath(start, end);
 }
