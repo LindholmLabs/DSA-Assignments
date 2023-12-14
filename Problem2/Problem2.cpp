@@ -22,6 +22,7 @@ public:
     int getNumNodes();
     bool BFS(int src, int dest, int distance[], int predecessor[]);
     void printShortPath(int src, int dest);
+    void printFriendsOf(int src);
 };
 
 Graph::Graph(int nodes) {
@@ -60,7 +61,7 @@ bool Graph::BFS(int src, int dest, int distance[], int predecessor[]) {
 
     visited[src] = true;
     distance[src] = 0;
-    queue.push(src);
+    queue.push(src); 
 
     while (!queue.empty()) {
         int current = queue.front();
@@ -78,20 +79,35 @@ bool Graph::BFS(int src, int dest, int distance[], int predecessor[]) {
     return false;
 }
 
+
+/*
+* Function: printFriendsOf
+* Print all friends of a node
+* @param src: the node to find friends 
+*/
+void Graph::printFriendsOf(int src) {
+	cout << "Friends of " << src << ": ";
+    for (int i = 0; i < nodes; i++) {
+        int* distance = new int[nodes];
+        int* predecessor = new int[nodes];
+        if (BFS(src, i, distance, predecessor)) {
+            if (distance[i] % 2 == 0) {
+				cout << i << " ";
+            }
+        }
+	}
+	cout << endl;
+}
+
 void Graph::printShortPath(int src, int dest) {
     int* distance = new int[nodes];
     int* predecessor = new int[nodes];
     if (BFS(src, dest, distance, predecessor)) {
         cout << "Path: ";
-        list<int> path;
         int crawl = dest;
-        path.push_front(crawl);
-        while (predecessor[crawl] != -1) {
-            path.push_front(predecessor[crawl]);
+        while (crawl != -1) {
+            cout << crawl << " ";
             crawl = predecessor[crawl];
-        }
-        for (auto i : path) {
-            cout << i << " ";
         }
 
         // A node is a friend if the shortest path is even
@@ -122,5 +138,8 @@ int main() {
     network.addEdge(2, 1); //C dislikes B
     
     cout << endl << "Shortest Path from starting node to end node: \n";
-    network.printShortPath(start, end);
+
+    network.printFriendsOf(3);
+
+    //network.printShortPath(start, end);
 }
