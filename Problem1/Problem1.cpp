@@ -43,11 +43,11 @@ int main()
 
 			showProgressBar(100, (double)j / iterations);
 
-			vector<int> unsorted = generateRandomVector(0, i, j * 1000);
+			vector<int> unsorted = generateRandomVector(0, i, j * stepSize);
 
 			auto start = chrono::high_resolution_clock::now();
 
-			vector<int> sorted = insertionSort(unsorted);
+			vector<int> sorted = bucketSort(unsorted);
 
 			auto end = chrono::high_resolution_clock::now();
 
@@ -82,13 +82,13 @@ vector<int> bucketSort(vector<int> v)
 {
 	int max = findMax(v);
 
-	// Create buckets (each bucket is a vector)
-	vector<vector<int>> w(max + 1, vector<int>());
+	// Create vector of 0s
+	vector<int> w(max + 1, 0);
 
 	// Add values to buckets
 	for (int i = 0; i < (int)v.size(); i++)
 	{
-		w[v[i]].push_back(v[i]);
+		w[v[i]] += 1;
 	}
 
 	// Create sorted vector
@@ -98,11 +98,11 @@ vector<int> bucketSort(vector<int> v)
 	for (int i = 0; i < (int)w.size(); i++)
 	{
 		//check if bucket is empty
-		if (!w[i].empty())
+		if (w[i] != 0)
 		{
 			// loop through each bucket
-			for (int value : w[i]) {
-				sorted.push_back(value);
+			for (int j = 0; j < w[i]; j++) {
+				sorted.push_back(i);
 			}
 		}
 	}
